@@ -69,10 +69,10 @@ function pluginManager_adminSettings(): void
 		security_dieOnInvalidCsrfToken();
 
 		// Update from form
-		$settings['showInactivePlugins'] = isset($_POST['showInactivePlugins']);
-		$settings['showSystemPlugins'] = isset($_POST['showSystemPlugins']);
-		$settings['groupByStatus'] = isset($_POST['groupByStatus']);
-		$settings['checkForUpdates'] = isset($_POST['checkForUpdates']);
+		$settings['showInactivePlugins'] = ($_POST['showInactivePlugins'] ?? '0') === '1';
+		$settings['showSystemPlugins'] = ($_POST['showSystemPlugins'] ?? '0') === '1';
+		$settings['groupByStatus'] = ($_POST['groupByStatus'] ?? '0') === '1';
+		$settings['checkForUpdates'] = ($_POST['checkForUpdates'] ?? '0') === '1';
 
 		if (pluginManager_saveSettings($settings)) {
 			$message = t('Settings saved successfully.');

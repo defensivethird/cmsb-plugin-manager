@@ -10,10 +10,16 @@
 -   Added backward compatibility support for both CMSB 3.81 (`_CSRFToken`) and 3.82+ (`_csrf`) session variable names
 -   Kanban-style sorting now properly saves and persists across page refreshes on all supported CMSB versions
 
+**Settings Page:**
+-   Fixed checkbox settings not saving when unchecked (showInactivePlugins, showSystemPlugins, groupByStatus, checkForUpdates)
+-   Corrected logic to check actual POST values instead of using isset() with hidden fields
+-   All settings now properly save checked and unchecked states
+
 ### Technical Changes
 -   Updated JavaScript AJAX handlers to use correct CSRF field name (`_csrf`)
 -   Modified CSRF token retrieval to check both `$_SESSION['_csrf']` (3.82+) and `$_SESSION['_CSRFToken']` (3.81) for cross-version compatibility
 -   Improved error handling for sort order save operations
+-   Changed settings form handler to use value comparison (`=== '1'`) instead of `isset()` checks
 
 ## Version 1.00 (2026-01-20)
 
