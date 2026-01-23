@@ -1,5 +1,20 @@
 # Changelog
 
+## Version 1.02 (2026-01-23)
+
+### Bug Fixes
+
+**Update Badge Persistence (GitHub Issue #1):**
+-   Fixed bug where "Update" badge persisted after updating a plugin to the latest version
+-   The update cache now validates cached results against current installed versions
+-   Added `pluginManager_validateCachedUpdates()` function to re-check version comparisons when loading from cache
+-   Update badges now correctly disappear once a plugin has been updated
+
+### Technical Changes
+-   Cache validation compares `availableVersion` against actual current installed version, not cached `currentVersion`
+-   Stale update entries are automatically filtered out when cache is loaded
+-   No need to wait for 24-hour cache expiration after updating plugins
+
 ## Version 1.01 (2026-01-22)
 
 ### Bug Fixes

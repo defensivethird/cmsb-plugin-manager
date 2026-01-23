@@ -2,7 +2,7 @@
 /*
 Plugin Name: Plugin Manager
 Description: Enhanced plugin management dashboard for CMS Builder - displays active plugins, menu items, and provides centralized control
-Version: 1.01
+Version: 1.02
 CMS Version Required: 3.50
 Author: Sagentic Web Design
 Author URI: https://www.sagentic.com
@@ -14,7 +14,7 @@ if (inCLI()) {
 }
 
 // Plugin constants
-$GLOBALS['PLUGINMANAGER_VERSION'] = '1.01';
+$GLOBALS['PLUGINMANAGER_VERSION'] = '1.02';
 
 // Load helper functions
 require_once __DIR__ . '/pluginManager_functions.php';

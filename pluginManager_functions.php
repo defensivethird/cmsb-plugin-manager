@@ -738,7 +738,13 @@ function pluginManager_checkForUpdates(bool $forceCheck = false): array
 		$cacheFile = __DIR__ . '/pluginManager_updates_cache.json';
 		if (file_exists($cacheFile)) {
 			$cached = json_decode(file_get_contents($cacheFile), true);
-			return $cached ?: ['updates' => [], 'lastCheck' => $settings['lastUpdateCheck']];
+			if ($cached) {
+				// Re-validate cached updates against current installed versions
+				// This fixes the bug where update badge persists after updating a plugin
+				$cached = pluginManager_validateCachedUpdates($cached);
+				return $cached;
+			}
+			return ['updates' => [], 'lastCheck' => $settings['lastUpdateCheck']];
 		}
 	}
 
@@ -801,6 +807,55 @@ function pluginManager_checkForUpdates(bool $forceCheck = false): array
 function pluginManager_getPluginUpdate(string $pluginName, array $updateInfo): ?array
 {
 	return $updateInfo['updates'][$pluginName] ?? null;
+}
+
+/**
+ * Validate cached update results against current installed versions
+ *
+ * This fixes the bug where update badges persist after a plugin has been updated.
+ * The cache stores the installed version at the time of the check, but the user
+ * may have updated the plugin since then. This function re-validates each cached
+ * update against the current installed version.
+ *
+ * @param array $cached Cached update results
+ * @return array Validated update results with stale entries removed
+ */
+function pluginManager_validateCachedUpdates(array $cached): array
+{
+	if (empty($cached['updates'])) {
+		return $cached;
+	}
+
+	// Get current installed plugins
+	$installedPlugins = getPluginList(false);
+
+	// Build a map of plugin name to current version
+	$currentVersions = [];
+	foreach ($installedPlugins as $pluginData) {
+		$currentVersions[$pluginData['name']] = $pluginData['version'];
+	}
+
+	// Filter out updates that are no longer valid
+	$validUpdates = [];
+	foreach ($cached['updates'] as $pluginName => $updateInfo) {
+		// Check if the plugin is still installed
+		if (!isset($currentVersions[$pluginName])) {
+			continue;
+		}
+
+		$currentVersion = $currentVersions[$pluginName];
+		$availableVersion = $updateInfo['availableVersion'];
+
+		// Only keep update if available version is still greater than current version
+		if (version_compare($availableVersion, $currentVersion, '>')) {
+			// Update the currentVersion in cache to reflect actual installed version
+			$updateInfo['currentVersion'] = $currentVersion;
+			$validUpdates[$pluginName] = $updateInfo;
+		}
+	}
+
+	$cached['updates'] = $validUpdates;
+	return $cached;
 }
 
 /**
