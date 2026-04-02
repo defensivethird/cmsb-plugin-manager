@@ -751,7 +751,7 @@ function pluginManager_checkForUpdates(bool $forceCheck = false): array
 	// Fetch from both RSS feeds
 	$feeds = [
 		'https://interactivetools.com/plugins/rss.php',
-		'https://www.sagentic.dev/public/plugins/rss.php',
+		'https://public.sagentic.dev/plugins/rss.php',
 	];
 
 	$availablePlugins = [];
